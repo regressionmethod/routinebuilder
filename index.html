@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Regression Reset Method - Routine Builder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-weight: bold;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .setup-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            flex: 1;
+            min-width: 300px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .schedule-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            flex: 2;
+            min-width: 400px;
+        }
+
+        .section-title {
+            color: #4ECDC4;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+            border-bottom: 3px solid #FFD700;
+            padding-bottom: 10px;
+        }
+
+        .setup-step {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #FFD700;
+        }
+
+        .setup-step h3 {
+            color: #4ECDC4;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4ECDC4;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            accent-color: #FFD700;
+        }
+
+        .btn-primary {
+            background: #FFD700;
+            color: #333;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 15px;
+        }
+
+        .btn-primary:hover {
+            background: #FFC107;
+            transform: translateY(-2px);
+        }
+
+        .stats-bar {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4ECDC4;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .week-overview {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .day-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .day-card:hover {
+            background: #e3f2fd;
+            transform: translateY(-2px);
+        }
+
+        .day-card.active {
+            background: #4ECDC4;
+            color: white;
+            border-color: #FFD700;
+        }
+
+        .day-card.completed {
+            background: #FFD700;
+            color: #333;
+        }
+
+        .day-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .day-name {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .day-focus {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .day-progress {
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+
+        .daily-schedule {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .schedule-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .schedule-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #4ECDC4;
+        }
+
+        .activity-item {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #FFD700;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .activity-item.completed {
+            background: #e8f5e8;
+            border-left-color: #4CAF50;
+        }
+
+        .activity-checkbox {
+            width: 20px;
+            height: 20px;
+            accent-color: #FFD700;
+        }
+
+        .activity-time {
+            font-weight: bold;
+            color: #4ECDC4;
+            min-width: 80px;
+        }
+
+        .activity-details {
+            flex: 1;
+        }
+
+        .activity-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .activity-description {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .activity-duration {
+            color: #999;
+            font-size: 0.8rem;
+        }
+
+        .daily-tip {
+            background: linear-gradient(135deg, #FFD700, #FFC107);
+            color: #333;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .daily-tip h4 {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .customization-panel {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .customization-panel h4 {
+            color: #4ECDC4;
+            margin-bottom: 15px;
+        }
+
+        .custom-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #FFD700;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .week-overview {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>THE REGRESSION RESET METHOD</h1>
+            <p>Routine Builder - 10 minutes a day to restore calm behavior</p>
+        </div>
+
+        <div class="main-content">
+            <div class="setup-panel" id="setupPanel">
+                <h2 class="section-title">🎯 Smart Setup Wizard</h2>
+                
+                <div class="setup-step">
+                    <h3>1. Dog Profile</h3>
+                    <div class="form-group">
+                        <label for="dogName">Dog's Name</label>
+                        <input type="text" id="dogName" placeholder="Enter your dog's name">
+                    </div>
+                    <div class="form-group">
+                        <label for="dogAge">Age</label>
+                        <select id="dogAge">
+                            <option value="">Select age</option>
+                            <option value="puppy">Puppy (under 1 year)</option>
+                            <option value="young">Young (1-3 years)</option>
+                            <option value="adult">Adult (3-7 years)</option>
+                            <option value="senior">Senior (7+ years)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="dogBreed">Breed/Size</label>
+                        <select id="dogBreed">
+                            <option value="">Select size</option>
+                            <option value="small">Small (under 25 lbs)</option>
+                            <option value="medium">Medium (25-60 lbs)</option>
+                            <option value="large">Large (60-90 lbs)</option>
+                            <option value="giant">Giant (90+ lbs)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="setup-step">
+                    <h3>2. Energy Level</h3>
+                    <div class="form-group">
+                        <label for="energyLevel">Current Energy Level</label>
+                        <select id="energyLevel">
+                            <option value="">Select level</option>
+                            <option value="low">Low - Calm, relaxed</option>
+                            <option value="moderate">Moderate - Balanced energy</option>
+                            <option value="high">High - Very active</option>
+                            <option value="hyperactive">Hyperactive - Difficult to settle</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="setup-step">
+                    <h3>3. Living Situation</h3>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="apartment" value="apartment">
+                            <label for="apartment">Apartment</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="house" value="house">
+                            <label for="house">House</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="yard" value="yard">
+                            <label for="yard">Yard Access</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="multiDog" value="multiDog">
+                            <label for="multiDog">Multiple Dogs</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setup-step">
+                    <h3>4. Your Schedule</h3>
+                    <div class="form-group">
+                        <label for="morningStart">Morning Start Time</label>
+                        <input type="time" id="morningStart" value="07:00">
+                    </div>
+                    <div class="form-group">
+                        <label for="availability">Daily Availability</label>
+                        <select id="availability">
+                            <option value="">Select availability</option>
+                            <option value="minimal">Minimal (15-30 min)</option>
+                            <option value="moderate">Moderate (30-60 min)</option>
+                            <option value="flexible">Flexible (60+ min)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="setup-step">
+                    <h3>5. Regression Issues</h3>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="housebreaking" value="housebreaking">
+                            <label for="housebreaking">House Breaking</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="jumping" value="jumping">
+                            <label for="jumping">Jumping</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="pulling" value="pulling">
+                            <label for="pulling">Leash Pulling</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="barking" value="barking">
+                            <label for="barking">Excessive Barking</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="chewing" value="chewing">
+                            <label for="chewing">Destructive Chewing</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="anxiety" value="anxiety">
+                            <label for="anxiety">Separation Anxiety</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setup-step">
+                    <h3>6. Primary Goals</h3>
+                    <div class="form-group">
+                        <label for="primaryGoal">Main Focus</label>
+                        <select id="primaryGoal">
+                            <option value="">Select primary goal</option>
+                            <option value="calm">Restore Calm Behavior</option>
+                            <option value="obedience">Basic Obedience</option>
+                            <option value="socialization">Socialization</option>
+                            <option value="impulse">Impulse Control</option>
+                            <option value="confidence">Build Confidence</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn-primary" onclick="generateSchedule()">Generate My Custom Routine</button>
+            </div>
+
+            <div class="schedule-panel" id="schedulePanel" style="display: none;">
+                <h2 class="section-title">📅 Your 7-Day Reset Schedule</h2>
+                
+                <div class="stats-bar">
+                    <div class="stat-item">
+                        <div class="stat-number" id="completedDays">0</div>
+                        <div class="stat-label">Completed Days</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="resetSessions">0</div>
+                        <div class="stat-label">Reset Sessions</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="consistencyScore">0%</div>
+                        <div class="stat-label">Consistency</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="currentStreak">0</div>
+                        <div class="stat-label">Current Streak</div>
+                    </div>
+                </div>
+
+                <div class="week-overview" id="weekOverview">
+                    <!-- Week overview will be populated by JavaScript -->
+                </div>
+
+                <div class="daily-schedule" id="dailySchedule">
+                    <!-- Daily schedule will be populated by JavaScript -->
+                </div>
+
+                <div class="daily-tip" id="dailyTip">
+                    <h4>💡 Today's Success Tip</h4>
+                    <p>Complete your setup wizard to see personalized daily tips!</p>
+                </div>
+
+                <div class="customization-panel">
+                    <h4>🔧 Quick Customization</h4>
+                    <div class="custom-controls">
+                        <div class="form-group">
+                            <label for="sessionDuration">Reset Session Duration</label>
+                            <select id="sessionDuration">
+                                <option value="5">5 minutes</option>
+                                <option value="10" selected>10 minutes</option>
+                                <option value="15">15 minutes</option>
+                                <option value="20">20 minutes</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="scheduleIntensity">Schedule Intensity</label>
+                            <select id="scheduleIntensity">
+                                <option value="gentle">Gentle</option>
+                                <option value="standard" selected>Standard</option>
+                                <option value="intensive">Intensive</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn-primary" onclick="exportSchedule()">📄 Export Schedule</button>
+                    <button class="btn-primary" onclick="printSchedule()">🖨️ Print Schedule</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentDay = 1;
+        let weekData = {};
+        let userSettings = {};
+        let progressData = {
+            completedDays: 0,
+            resetSessions: 0,
+            consistencyScore: 0,
+            currentStreak: 0
+        };
+
+        // Week structure with daily focuses
+        const weekStructure = {
+            1: { name: "Monday", focus: "Fresh Start", theme: "New Beginning" },
+            2: { name: "Tuesday", focus: "Building Momentum", theme: "Consistency" },
+            3: { name: "Wednesday", focus: "Mid-Week Check", theme: "Assessment" },
+            4: { name: "Thursday", focus: "Skill Building", theme: "Development" },
+            5: { name: "Friday", focus: "Fun & Flexibility", theme: "Engagement" },
+            6: { name: "Saturday", focus: "Active Rest", theme: "Recovery" },
+            7: { name: "Sunday", focus: "Reset & Prepare", theme: "Preparation" }
+        };
+
+        // Sample activities database
+        const activitiesDatabase = {
+            morning: [
+                { name: "Morning Potty Break", description: "Calm, structured outdoor time", duration: 10, category: "essential" },
+                { name: "Gentle Wake-Up Routine", description: "Slow, peaceful start to the day", duration: 5, category: "routine" },
+                { name: "Morning Reset Session", description: "Core 10-minute reset ritual", duration: 10, category: "reset" }
+            ],
+            feeding: [
+                { name: "Structured Feeding", description: "Impulse control during meals", duration: 15, category: "essential" },
+                { name: "Food Puzzle Time", description: "Mental stimulation through feeding", duration: 10, category: "mental" },
+                { name: "Wait Command Practice", description: "Patience training with food", duration: 5, category: "training" }
+            ],
+            exercise: [
+                { name: "Calm Leash Walk", description: "Structured outdoor exercise", duration: 20, category: "physical" },
+                { name: "Indoor Movement", description: "Gentle indoor physical activity", duration: 15, category: "physical" },
+                { name: "Backyard Exploration", description: "Supervised outdoor time", duration: 15, category: "physical" }
+            ],
+            mental: [
+                { name: "Puzzle Solving", description: "Mental stimulation activities", duration: 15, category: "mental" },
+                { name: "Scent Work", description: "Nose work and scent games", duration: 10, category: "mental" },
+                { name: "Training Session", description: "Basic obedience practice", duration: 15, category: "training" }
+            ],
+            social: [
+                { name: "Controlled Socialization", description: "Structured social interaction", duration: 20, category: "social" },
+                { name: "Real-World Practice", description: "Applying training in real situations", duration: 15, category: "social" },
+                { name: "Confidence Building", description: "Positive exposure activities", duration: 15, category: "social" }
+            ],
+            evening: [
+                { name: "Evening Wind-Down", description: "Calm preparation for rest", duration: 10, category: "routine" },
+                { name: "Final Potty Break", description: "Last outdoor time of day", duration: 10, category: "essential" },
+                { name: "Bedtime Routine", description: "Settling activities", duration: 15, category: "routine" }
+            ]
+        };
+
+        // Daily tips database
+        const dailyTips = {
+            1: "Start fresh today! Focus on consistency rather than perfection. Every small step counts toward your dog's progress.",
+            2: "Building momentum means celebrating small wins. Notice improvements in your dog's behavior, however minor.",
+            3: "Mid-week check-in: How is your dog responding? Adjust the routine if needed - flexibility is key to success.",
+            4: "Skill building day! Focus on one specific behavior and practice it multiple times with patience and rewards.",
+            5: "Fun and flexibility! Mix up the routine a bit while maintaining structure. Variety keeps both you and your dog engaged.",
+            6: "Active rest means lighter activities. Let your dog process the week's learning while still maintaining routine.",
+            7: "Reset and prepare for the week ahead. Reflect on progress and set intentions for continued success."
+        };
+
+        function generateSchedule() {
+            // Collect user settings
+            userSettings = {
+                dogName: document.getElementById('dogName').value || 'Your Dog',
+                dogAge: document.getElementById('dogAge').value,
+                dogBreed: document.getElementById('dogBreed').value,
+                energyLevel: document.getElementById('energyLevel').value,
+                morningStart: document.getElementById('morningStart').value,
+                availability: document.getElementById('availability').value,
+                primaryGoal: document.getElementById('primaryGoal').value,
+                livingEnvironment: gatherCheckboxValues(['apartment', 'house', 'yard', 'multiDog']),
+                regressionIssues: gatherCheckboxValues(['housebreaking', 'jumping', 'pulling', 'barking', 'chewing', 'anxiety'])
+            };
+
+            // Validate required fields
+            if (!userSettings.dogAge || !userSettings.energyLevel || !userSettings.primaryGoal) {
+                alert('Please complete all required fields before generating your schedule.');
+                return;
+            }
+
+            // Initialize fresh week data
+            weekData = {};
+            progressData = {
+                completedDays: 0,
+                resetSessions: 0,
+                consistencyScore: 0,
+                currentStreak: 0
+            };
+
+            // Generate personalized week data
+            generateWeekData();
+
+            // Verify data was created properly
+            console.log('Week data generated:', weekData);
+
+            // Show schedule panel and hide setup
+            document.getElementById('setupPanel').style.display = 'none';
+            document.getElementById('schedulePanel').style.display = 'block';
+
+            // Initialize the schedule display
+            renderWeekOverview();
+            renderDailySchedule(1);
+            updateStats();
+        }
+
+        function gatherCheckboxValues(checkboxIds) {
+            return checkboxIds.filter(id => document.getElementById(id).checked);
+        }
+
+        function generateWeekData() {
+            weekData = {};
+            
+            for (let day = 1; day <= 7; day++) {
+                const activities = generateDailyActivities(day);
+                weekData[day] = {
+                    ...weekStructure[day],
+                    activities: activities,
+                    completed: 0,
+                    total: activities.length
+                };
+            }
+        }
+
+        function generateDailyActivities(day) {
+            const activities = [];
+            const startTime = new Date(`2024-01-01 ${userSettings.morningStart}`);
+
+            // Morning routine (always included)
+            activities.push({
+                time: formatTime(startTime),
+                ...activitiesDatabase.morning[0],
+                completed: false
+            });
+
+            // Add reset session (core of the method)
+            const resetTime = new Date(startTime.getTime() + 30 * 60000); // 30 minutes later
+            activities.push({
+                time: formatTime(resetTime),
+                name: "Daily Reset Session",
+                description: "Core 10-minute regression reset ritual - the heart of the program",
+                duration: 10,
+                category: "reset",
+                completed: false
+            });
+
+            // Add activities based on day focus and user settings
+            addPersonalizedActivities(activities, day, startTime);
+
+            return activities;
+        }
+
+        function addPersonalizedActivities(activities, day, startTime) {
+            const dayFocus = weekStructure[day].focus;
+            let currentTime = new Date(startTime.getTime() + 90 * 60000); // Start 90 minutes after morning
+
+            // Add feeding activity
+            activities.push({
+                time: formatTime(currentTime),
+                name: "Structured Feeding",
+                description: "Impulse control during meals",
+                duration: 15,
+                category: "essential",
+                completed: false
+            });
+
+            currentTime = new Date(currentTime.getTime() + 60 * 60000); // 1 hour later
+
+            // Add activities based on day focus
+            switch (dayFocus) {
+                case "Fresh Start":
+                    activities.push({
+                        time: formatTime(currentTime),
+                        name: "Calm Leash Walk",
+                        description: "Structured outdoor exercise",
+                        duration: 20,
+                        category: "physical",
+                        completed: false
+                    });
+                    break;
+                case "Building Momentum":
+                    activities.push({
+                        time: formatTime(currentTime),
+                        name: "Puzzle Solving",
+                        description: "Mental stimulation activities",
+                        duration: 15,
+                        category: "mental",
+                        completed: false
+                    });
+                    break;
+                case "Mid-Week Check":
+                    activities.push({
+                        time: formatTime(currentTime),
+                        name: "Controlled Socialization",
+                        description: "Structured social interaction",
+                        duration: 20,
+                        category: "social",
+                        completed: false
+                    });
+                    break;
+                case "Skill Building":
+                    activities.push({
+                        time: formatTime(currentTime),
+                        name: "Training Session",
+                        description: "Basic obedience practice",
+                        duration: 15,
+                        category: "training",
+                        completed: false
+                    });
+                    break;
+                case "Fun & Flexibility":
+                    activities.push({
+                        time: formatTime(currentTime),
+                        name: "Scent Work",
+                        description: "Nose work and scent games",
+                        duration: 10,
+                        category: "mental",
+                        completed: false
+                    });
+                    break;
+                case "Active Rest":
+                    activities.push({
+                        time: formatTime(currentTime),
+                        name: "Indoor Movement",
+                        description: "Gentle indoor physical activity",
+                        duration: 15,
+                        category: "physical",
+                        completed: false
+                    });
+                    break;
+                case "Reset & Prepare":
+                    activities.push({
+                        time: formatTime(currentTime),
+                        name: "Confidence Building",
+                        description: "Positive exposure activities",
+                        duration: 15,
+                        category: "social",
+                        completed: false
+                    });
+                    break;
+            }
+
+            // Add evening routine
+            const eveningTime = new Date(startTime.getTime() + 12 * 60 * 60000); // 12 hours later
+            activities.push({
+                time: formatTime(eveningTime),
+                name: "Evening Wind-Down",
+                description: "Calm preparation for rest",
+                duration: 10,
+                category: "routine",
+                completed: false
+            });
+
+            activities.push({
+                time: formatTime(new Date(eveningTime.getTime() + 30 * 60000)),
+                name: "Final Potty Break",
+                description: "Last outdoor time of day",
+                duration: 10,
+                category: "essential",
+                completed: false
+            });
+        }
+
+        function formatTime(date) {
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function renderWeekOverview() {
+            const container = document.getElementById('weekOverview');
+            container.innerHTML = '';
+
+            for (let day = 1; day <= 7; day++) {
+                const dayData = weekData[day];
+                const dayCard = document.createElement('div');
+                dayCard.className = `day-card ${currentDay === day ? 'active' : ''} ${dayData.completed === dayData.total && dayData.total > 0 ? 'completed' : ''}`;
+                dayCard.onclick = () => selectDay(day);
+
+                const completionPercentage = dayData.total > 0 ? Math.round((dayData.completed / dayData.total) * 100) : 0;
+
+                dayCard.innerHTML = `
+                    <div class="day-number">${day}</div>
+                    <div class="day-name">${dayData.name}</div>
+                    <div class="day-focus">${dayData.focus}</div>
+                    <div class="day-progress">${dayData.completed}/${dayData.total} completed</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${completionPercentage}%"></div>
+                    </div>
+                `;
+
+                container.appendChild(dayCard);
+            }
+        }
+
+        function selectDay(day) {
+            currentDay = day;
+            renderWeekOverview();
+            renderDailySchedule(day);
+        }
+
+        function renderDailySchedule(day) {
+            const container = document.getElementById('dailySchedule');
+            
+            // Safety check to ensure weekData exists
+            if (!weekData || !weekData[day]) {
+                container.innerHTML = '<p>Please generate your schedule first by completing the setup wizard.</p>';
+                return;
+            }
+
+            const dayData = weekData[day];
+
+            container.innerHTML = '';
+
+            const header = document.createElement('div');
+            header.className = 'schedule-header';
+            header.innerHTML = `
+                <div class="schedule-title">Day ${day}: ${dayData.name} - ${dayData.focus}</div>
+                <div class="day-progress">${dayData.completed}/${dayData.total} activities completed</div>
+            `;
+            container.appendChild(header);
+
+            if (!dayData.activities || dayData.activities.length === 0) {
+                const noActivities = document.createElement('p');
+                noActivities.textContent = 'No activities scheduled for this day.';
+                container.appendChild(noActivities);
+                return;
+            }
+
+            dayData.activities.forEach((activity, index) => {
+                const activityElement = document.createElement('div');
+                activityElement.className = `activity-item ${activity.completed ? 'completed' : ''}`;
+                
+                activityElement.innerHTML = `
+                    <input type="checkbox" class="activity-checkbox" 
+                           ${activity.completed ? 'checked' : ''} 
+                           onchange="toggleActivity(${day}, ${index})">
+                    <div class="activity-time">${activity.time}</div>
+                    <div class="activity-details">
+                        <div class="activity-name">${activity.name}</div>
+                        <div class="activity-description">${activity.description}</div>
+                        <div class="activity-duration">${activity.duration} minutes</div>
+                    </div>
+                `;
+                
+                container.appendChild(activityElement);
+            });
+
+            // Update daily tip
+            updateDailyTip(day);
+        }
+
+        function toggleActivity(day, activityIndex) {
+            // Safety check to ensure weekData exists and has the day
+            if (!weekData || !weekData[day] || !weekData[day].activities) {
+                console.error('Week data not properly initialized');
+                return;
+            }
+
+            // Safety check for activity index
+            if (activityIndex >= weekData[day].activities.length || activityIndex < 0) {
+                console.error('Invalid activity index');
+                return;
+            }
+
+            const activity = weekData[day].activities[activityIndex];
+            activity.completed = !activity.completed;
+
+            // Update completed count for the day
+            weekData[day].completed = weekData[day].activities.filter(a => a.completed).length;
+
+            // Update displays
+            renderWeekOverview();
+            renderDailySchedule(day);
+            updateStats();
+            saveProgress();
+
+            // Track reset sessions specifically
+            if (activity.category === 'reset' && activity.completed) {
+                progressData.resetSessions++;
+            } else if (activity.category === 'reset' && !activity.completed) {
+                progressData.resetSessions = Math.max(0, progressData.resetSessions - 1);
+            }
+        }
+
+        function updateDailyTip(day) {
+            const tipContainer = document.getElementById('dailyTip');
+            const dayData = weekData[day];
+            const completionPercentage = dayData.total > 0 ? Math.round((dayData.completed / dayData.total) * 100) : 0;
+            
+            let motivationalMessage = "";
+            if (completionPercentage === 100) {
+                motivationalMessage = " 🎉 Fantastic job completing today's routine!";
+            } else if (completionPercentage >= 50) {
+                motivationalMessage = " 💪 You're making great progress today!";
+            } else if (completionPercentage > 0) {
+                motivationalMessage = " 🌟 Great start! Keep building momentum!";
+            }
+
+            tipContainer.innerHTML = `
+                <h4>💡 Day ${day} Success Tip</h4>
+                <p>${dailyTips[day]}${motivationalMessage}</p>
+            `;
+        }
+
+        function updateStats() {
+            // Calculate completed days
+            let completedDays = 0;
+            let totalActivities = 0;
+            let completedActivities = 0;
+
+            for (let day = 1; day <= 7; day++) {
+                const dayData = weekData[day];
+                if (dayData.completed === dayData.total && dayData.total > 0) {
+                    completedDays++;
+                }
+                totalActivities += dayData.total;
+                completedActivities += dayData.completed;
+            }
+
+            // Calculate consistency score
+            const consistencyScore = totalActivities > 0 ? Math.round((completedActivities / totalActivities) * 100) : 0;
+
+            // Calculate current streak
+            let currentStreak = 0;
+            for (let day = 1; day <= 7; day++) {
+                const dayData = weekData[day];
+                if (dayData.completed === dayData.total && dayData.total > 0) {
+                    currentStreak++;
+                } else {
+                    break;
+                }
+            }
+
+            // Update progress data
+            progressData.completedDays = completedDays;
+            progressData.consistencyScore = consistencyScore;
+            progressData.currentStreak = currentStreak;
+
+            // Update display
+            document.getElementById('completedDays').textContent = progressData.completedDays;
+            document.getElementById('resetSessions').textContent = progressData.resetSessions;
+            document.getElementById('consistencyScore').textContent = progressData.consistencyScore + '%';
+            document.getElementById('currentStreak').textContent = progressData.currentStreak;
+        }
+
+        function saveProgress() {
+            const progressToSave = {
+                weekData: weekData,
+                progressData: progressData,
+                userSettings: userSettings,
+                currentDay: currentDay
+            };
+            
+            // Save to localStorage (note: in a real app, this would be server-side)
+            try {
+                localStorage.setItem('regressionResetProgress', JSON.stringify(progressToSave));
+            } catch (e) {
+                console.log('Progress saving not available in this environment');
+            }
+        }
+
+        function loadProgress() {
+            try {
+                const saved = localStorage.getItem('regressionResetProgress');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    weekData = parsed.weekData || weekData;
+                    progressData = parsed.progressData || progressData;
+                    currentDay = parsed.currentDay || 1;
+                    
+                    renderWeekOverview();
+                    renderDailySchedule(currentDay);
+                    updateStats();
+                }
+            } catch (e) {
+                console.log('Progress loading not available in this environment');
+            }
+        }
+
+        function exportSchedule() {
+            const scheduleText = generateScheduleText();
+            const blob = new Blob([scheduleText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${userSettings.dogName}_regression_reset_schedule.txt`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            URL.revokeObjectURL(url);
+        }
+
+        function printSchedule() {
+            const scheduleText = generateScheduleText();
+            const printWindow = window.open('', '_blank');
+            
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>${userSettings.dogName}'s Regression Reset Schedule</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; }
+                        h1 { color: #4ECDC4; }
+                        h2 { color: #333; border-bottom: 2px solid #FFD700; padding-bottom: 5px; }
+                        .day-section { margin-bottom: 30px; page-break-inside: avoid; }
+                        .activity { margin-bottom: 10px; padding: 10px; background: #f8f9fa; border-left: 4px solid #FFD700; }
+                        .activity-time { font-weight: bold; color: #4ECDC4; }
+                        .activity-name { font-weight: 600; }
+                        .activity-description { color: #666; }
+                        @media print { body { margin: 0; } }
+                    </style>
+                </head>
+                <body>
+                    <h1>The Regression Reset Method</h1>
+                    <h2>${userSettings.dogName}'s Personalized 7-Day Schedule</h2>
+                    ${generatePrintableSchedule()}
+                </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+            printWindow.focus();
+            printWindow.print();
+        }
+
+        function generateScheduleText() {
+            let text = `THE REGRESSION RESET METHOD\n`;
+            text += `${userSettings.dogName}'s Personalized 7-Day Schedule\n`;
+            text += `Generated on: ${new Date().toLocaleDateString()}\n\n`;
+            
+            text += `DOG PROFILE:\n`;
+            text += `Name: ${userSettings.dogName}\n`;
+            text += `Age: ${userSettings.dogAge}\n`;
+            text += `Size: ${userSettings.dogBreed}\n`;
+            text += `Energy Level: ${userSettings.energyLevel}\n`;
+            text += `Primary Goal: ${userSettings.primaryGoal}\n\n`;
+
+            for (let day = 1; day <= 7; day++) {
+                const dayData = weekData[day];
+                text += `DAY ${day}: ${dayData.name.toUpperCase()} - ${dayData.focus}\n`;
+                text += `Focus: ${dayData.theme}\n`;
+                text += `Daily Tip: ${dailyTips[day]}\n\n`;
+
+                dayData.activities.forEach(activity => {
+                    text += `${activity.time} - ${activity.name} (${activity.duration} min)\n`;
+                    text += `   ${activity.description}\n\n`;
+                });
+
+                text += `\n`;
+            }
+
+            return text;
+        }
+
+        function generatePrintableSchedule() {
+            let html = '';
+            
+            for (let day = 1; day <= 7; day++) {
+                const dayData = weekData[day];
+                html += `<div class="day-section">`;
+                html += `<h2>Day ${day}: ${dayData.name} - ${dayData.focus}</h2>`;
+                html += `<p><strong>Focus:</strong> ${dayData.theme}</p>`;
+                html += `<p><strong>Daily Tip:</strong> ${dailyTips[day]}</p>`;
+
+                dayData.activities.forEach(activity => {
+                    html += `<div class="activity">`;
+                    html += `<div class="activity-time">${activity.time}</div>`;
+                    html += `<div class="activity-name">${activity.name} (${activity.duration} minutes)</div>`;
+                    html += `<div class="activity-description">${activity.description}</div>`;
+                    html += `</div>`;
+                });
+
+                html += `</div>`;
+            }
+
+            return html;
+        }
+
+        // Customization functions
+        document.getElementById('sessionDuration').addEventListener('change', function() {
+            const newDuration = parseInt(this.value);
+            
+            // Update all reset sessions
+            for (let day = 1; day <= 7; day++) {
+                weekData[day].activities.forEach(activity => {
+                    if (activity.category === 'reset') {
+                        activity.duration = newDuration;
+                    }
+                });
+            }
+            
+            renderDailySchedule(currentDay);
+            saveProgress();
+        });
+
+        document.getElementById('scheduleIntensity').addEventListener('change', function() {
+            const intensity = this.value;
+            
+            // Adjust schedule based on intensity
+            for (let day = 1; day <= 7; day++) {
+                weekData[day].activities.forEach(activity => {
+                    switch (intensity) {
+                        case 'gentle':
+                            if (activity.duration > 15) activity.duration = Math.max(10, activity.duration - 5);
+                            break;
+                        case 'intensive':
+                            if (activity.duration < 20) activity.duration = activity.duration + 5;
+                            break;
+                    }
+                });
+            }
+            
+            renderDailySchedule(currentDay);
+            saveProgress();
+        });
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default values
+            document.getElementById('morningStart').value = '07:00';
+            document.getElementById('sessionDuration').value = '10';
+            document.getElementById('scheduleIntensity').value = 'standard';
+            
+            // Try to load existing progress
+            loadProgress();
+        });
+
+        // Auto-save functionality
+        setInterval(saveProgress, 30000); // Save every 30 seconds
+    </script>
+</body>
+</html>
